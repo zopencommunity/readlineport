@@ -1,7 +1,7 @@
 # Update bump details accordingly. Use bump check to confirm.
 # bump: readline-version /READLINE_VERSION="(.*)"/ https://ftp.gnu.org/gnu/readline/readline-8.3-rc1.tar.gz|semver:*
-# READLINE_VERSION="V.R.M" # Specify a stable release
-# export ZOPEN_STABLE_TAG="v${READLINE_VERSION}"
+READLINE_VERSION="V.R.M" # Specify a stable release
+export ZOPEN_STABLE_TAG="v${READLINE_VERSION}"
 
 ###
 ### Build control file for the readline port
@@ -15,7 +15,7 @@
 export ZOPEN_BUILD_LINE="STABLE"
 
 ## Required IF ZOPEN_BUILD_LINE='STABLE'
-export ZOPEN_STABLE_URL="https://ftp.gnu.org/gnu/readline/readline-8.3-rc1.tar.gz"  # Specify the stable build URL (either git or tarball)
+export ZOPEN_STABLE_URL="https://ftp.gnu.org/gnu/readline/readline-$READLINE_VERSION.tar.gz"  # Specify the stable build URL (either git or tarball)
 export ZOPEN_STABLE_DEPS="zoslib tar gzip make m4 curl sed grep coreutils" # Specify the stable build dependencies.
 
 ## Required IF ZOPEN_BUILD_LINE='DEV'
@@ -24,7 +24,7 @@ export ZOPEN_DEV_DEPS=""  # Specify the dev build dependencies
 
 ## Specify a space-delimited list of applicable categories.
 ## See tool_categories.txt for valid options
-export ZOPEN_CATEGORIES="core"
+export ZOPEN_CATEGORIES="core library"
 
 ## Runtime zopen tool dependencies to be installed alongside the tool.
 export ZOPEN_RUNTIME_DEPS=""
@@ -67,7 +67,7 @@ zopen_get_version()
 {
   # Modify to echo the version of your tool/library
   # Rather than hardcoding the version, obtain the version by running the tool/library
-  echo "1.0.0"
+  echo $READLINE_VERSION
 }
 
 
