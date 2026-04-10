@@ -16,7 +16,7 @@ export ZOPEN_BUILD_LINE="STABLE"
 
 ## Required IF ZOPEN_BUILD_LINE='STABLE'
 export ZOPEN_STABLE_URL="https://ftp.gnu.org/gnu/readline/readline-$READLINE_VERSION.tar.gz"  # Specify the stable build URL (either git or tarball)
-export ZOPEN_STABLE_DEPS="zoslib tar gzip make m4 curl sed grep coreutils" # Specify the stable build dependencies.
+export ZOPEN_STABLE_DEPS="make m4 grep coreutils patch" # Specify the stable build dependencies.
 
 ## Required IF ZOPEN_BUILD_LINE='DEV'
 export ZOPEN_DEV_URL=""   # Specify the dev build URL
@@ -49,6 +49,38 @@ export ZOPEN_SYSTEM_PREREQ=""
 ###
 ### Required user-supplied functions
 ###
+
+zopen_post_extract()
+{
+  # Download and apply official bash patches
+  src_dir="$1"
+  original_dir=$(pwd)
+  cd "${src_dir}" || return 1
+
+  major_minor=$(echo "${READLINE_VERSION}" | cut -d. -f1,2 | tr -d '.')
+  patches_url="https://ftp.gnu.org/gnu/readline/readline-${READLINE_VERSION}-patches"
+
+  echo "Checking for readline patches at ${patches_url}..."
+
+  # Try to fetch the patches directory listing
+  patches_list=$(curl -s "${patches_url}/" | grep -o "readline${major_minor}-[0-9]\{3\}" | sort -u)
+
+  if [ -n "${patches_list}" ]; then
+    echo "Found patches, downloading and applying..."
+    for patch_name in ${patches_list}; do
+      echo "Applying ${patch_name}..."
+      curl -s "${patches_url}/${patch_name}" | patch -p0 -s
+      if [ $? -ne 0 ]; then
+        echo "Warning: Failed to apply ${patch_name}"
+      fi
+    done
+    echo "Finished applying patches"
+  else
+    echo "No patches found for readline ${READLINE_VERSION}"
+  fi
+
+  cd "${original_dir}"
+}
 
 zopen_check_results()
 {
