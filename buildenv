@@ -1,6 +1,8 @@
 # Update bump details accordingly. Use bump check to confirm.
 # bump: readline-version /READLINE_VERSION="(.*)"/ https://ftp.gnu.org/gnu/readline/|re:/href="readline-([\d.]+).tar.gz"/$1/|semver:*
 READLINE_VERSION="8.3" # Specify a stable release
+# bump: readline-patch-level /READLINE_PATCH_LEVEL="(.*)"/ https://ftp.gnu.org/gnu/readline/readline-8.3-patches/|re:/readline83-(\d+)"/|semver:*
+READLINE_PATCH_LEVEL="003"
 export ZOPEN_STABLE_TAG="v${READLINE_VERSION}"
 
 ###
